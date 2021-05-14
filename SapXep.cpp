@@ -102,10 +102,25 @@ void sortByMerge(Item dat[], int n) {
 
 	// ---------------------------
 }
-
+void quickSort(Item *a, int b, int e) {
+	if (b >= e) return;
+	Item x = a[0];
+	int i = b, j = e;
+	while(i < j) {
+		while (a[i].word.compare(x.word) < 0) i++;
+		while (a[j].word.compare(x.word) > 0) j--;
+		if (i < j) {
+			swap(a[i], a[j]);
+			i++;
+			j--;
+		}
+	}
+	quickSort(a, b, j);
+	quickSort(a, i, e);
+}
 void sortByQuick(Item dat[], int n) {
 	// Cai dat code Sap xep Nhanh o day
-
+	quickSort(dat, 0, n-1);
 	// ---------------------------
 }
 
@@ -168,7 +183,7 @@ int main() {
 	start = clock();
 	// Goi ham sap xep
 	int max=getMax(data,n);
-  sortByRadix(data,n);
+  sortByQuick(data,n);
 	// ------------------------------
 	cout << "Thoi gian sap xep: " << clock() - start << "ms" << endl;
 	saveData("rcomputer.txt", data, n);
