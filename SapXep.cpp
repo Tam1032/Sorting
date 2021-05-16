@@ -91,32 +91,108 @@ void sortByBubble(Item dat[], int n) {
 	// ---------------------------
 }
 
+void heapify(Item *a, int k, int n) {
+	int j = 2*k+1;
+	while (j < n) {
+		if (j + 1 < n)
+		if (a[j].word<a[j + 1].word) j = j + 1;
+		if (a[k].word<a[j].word) return;
+		swap(a[k], a[j]);
+		k = j; j = 2*k + 1;
+	}
+}
+
+void buildHeap(Item *a, int n) {
+  int i;
+  i = n/2 - 1;
+  while (i >= 0) {
+    heapify(a, i, n);
+    i--;
+  }
+}
+
 void sortByHeap(Item dat[], int n) {
 	// Cai dat code Sap xep Vun Dong o day
-
+	buildHeap(dat, n);
+	while (n > 0) {
+		n = n - 1;
+		swap(dat[0], dat[n]);
+		heapify(dat, 0, n);
+	}
 	// ---------------------------
 }
 
+
+void merge(Item arr[], int l, int m, int r)
+{
+    int n1 = m - l + 1;
+    int n2 = r - m;
+    Item L[n1], R[n2];
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+    int i = 0;
+    int j = 0;
+    int k = l;
+    while (i < n1 && j < n2) {
+        if (L[i].word.compare(R[j].word) <= 0 ) {
+            arr[k] = L[i];
+            i++;
+        }
+        else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+
+void mergeSort(Item arr[],int l,int r){
+    if(l>=r){
+        return;//returns recursively
+    }
+    int m =l+ (r-l)/2;
+    mergeSort(arr,l,m);
+    mergeSort(arr,m+1,r);
+    merge(arr,l,m,r);
+}
 void sortByMerge(Item dat[], int n) {
 	// Cai dat code Sap xep Tron o day
-
+	mergeSort(dat,0,n-1);
 	// ---------------------------
 }
-void quickSort(Item *a, int b, int e) {
-	if (b >= e) return;
-	Item x = a[0];
-	int i = b, j = e;
-	while(i < j) {
-		while (a[i].word.compare(x.word) < 0) i++;
-		while (a[j].word.compare(x.word) > 0) j--;
-		if (i < j) {
-			swap(a[i], a[j]);
-			i++;
-			j--;
-		}
-	}
-	quickSort(a, b, j);
-	quickSort(a, i, e);
+
+int Partition(Item arr[], int low, int high){
+    Item pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j < high ; j++)
+    {
+        if (arr[j].word<pivot.word)
+        {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return (i + 1);
+}
+void quickSort(Item a[], int left, int right) {
+	if (left >= right) return;
+	int partitioningIndex = Partition(a,left,right);
+	quickSort(a, left, partitioningIndex-1);
+	quickSort(a, partitioningIndex+1, right);
 }
 void sortByQuick(Item dat[], int n) {
 	// Cai dat code Sap xep Nhanh o day
@@ -129,6 +205,8 @@ void sortByShell(Item dat[], int n) {
 
 	// ---------------------------
 }
+
+
 int getMax(Item arr[], int n){
 	int Max = arr[0].word.size();
 	for (int i = 0; i < n; i++) {
@@ -176,17 +254,16 @@ int main() {
 	clock_t start;
 	start = clock();
 	cout << "Tai du lieu tu dien" << endl;
-	loadData("mcomputer.txt", data, n);
+	loadData((char*)"mcomputer.txt", data, n);
 	cout << "Tong so tu vung: " << n << endl;
 	cout << "Thoi gian tai du lieu: " << clock() - start << "ms" << endl;
 	string word;
 	start = clock();
 	// Goi ham sap xep
-	int max=getMax(data,n);
   sortByQuick(data,n);
 	// ------------------------------
 	cout << "Thoi gian sap xep: " << clock() - start << "ms" << endl;
-	saveData("rcomputer.txt", data, n);
+	saveData((char*)"rcomputer.txt", data, n);
 	system("pause");
 	return 0;
 }
